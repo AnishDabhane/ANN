@@ -3,9 +3,8 @@ from tkinter import messagebox
 from PIL import Image, ImageDraw
 import joblib
 import numpy as np
-
 # Load the pre-trained model
-#model = joblib.load('path_to_your_model.pkl')
+model = joblib.load('TensorFlow.py')
 
 # Constants
 CANVAS_WIDTH = 300
