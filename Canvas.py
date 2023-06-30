@@ -3,8 +3,21 @@ from tkinter import messagebox
 from PIL import Image, ImageDraw
 import joblib
 import numpy as np
+
+from NeuralNetwork import neuralNetwork
+ # number of input, hidden and output nodes
+input_nodes = 784
+hidden_nodes = 400
+output_nodes = 10
+
+# learning rate
+learning_rate = 0.2
+
+# create instance of neural network
+model = neuralNetwork(input_nodes,hidden_nodes,output_nodes, learning_rate)
+
 # Load the pre-trained model
-model = joblib.load('TensorFlow.py')
+# model = joblib.load('/home/anishdabhane/Desktop/ANN/NeuralNetwork.py')
 
 # Constants
 CANVAS_WIDTH = 300
@@ -12,7 +25,7 @@ CANVAS_HEIGHT = 300
 BRUSH_SIZES = {
     'small': 4,
     'medium': 8,
-    'large': 12
+    'large': 20
 }
 BRUSH_STYLES = {
     'round': 'round',
@@ -27,6 +40,7 @@ DEFAULT_BRUSH_STYLE = 'round'
 # Function to preprocess the user's input
 def preprocess_input(image):
     image = image.resize((28, 28))
+    image.save('img.jpg')
     image = image.convert('L')
     image = np.array(image)
     image = image.flatten()
@@ -40,15 +54,18 @@ def predict_digit():
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, CANVAS_WIDTH, CANVAS_HEIGHT), fill='black')
 
-    canvas_image = canvas.postscript(colormode='gray')
-    image.paste(Image.open(canvas_image), (50, 50))
+    canvas.update()
+    canvas_image = canvas.postscript(file='img.ps', colormode='gray')
+    img = Image.open('img.ps')
+    img.save('img.jpg')
+    # image.paste(Image.open('img.jpg'), (50, 50))
 
     # Preprocess the input
-    preprocessed_image = preprocess_input(image)
+    preprocessed_image = preprocess_input(img)
 
     # Make the prediction
-    prediction = model.predict([preprocessed_image])
-    predicted_digit = prediction[0]
+    prediction = model.query([preprocessed_image])
+    predicted_digit = np.argmax(np.reshape(prediction, (10,)))
 
     # Display the predicted digit
     messagebox.showinfo("Prediction", f"The predicted digit is: {predicted_digit}")
